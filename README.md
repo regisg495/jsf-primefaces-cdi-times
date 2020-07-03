@@ -9,4 +9,4 @@ Para criar o database, CREATE DATABASE "nome";
 
 3 - Rode o projeto utilizando o servidor de sua preferência.
 
-4 - Todos os endpoints estão no em src/main/webapp/
+4 - Todos as páginas estão no em src/main/webapp/
