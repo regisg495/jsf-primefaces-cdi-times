@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<ui:composition template="_template.xhtml">
+
+
+	<ui:define name="titulo">
+		<p:outputPanel>Novo Técnico</p:outputPanel>
+	</ui:define>
+
+	<ui:define name="conteudo">
+		<h:form id="tecnico">
+			<p:fieldset legend="Dados do Técnico">
+
+				<h:panelGrid columns="2">
+
+					<p:outputLabel value="Nome do Técnico " for="nome"></p:outputLabel>
+					<p:inputText id="nome" value="#{tecnicoBean.tecnico.nome}"
+						required="true">
+					</p:inputText>
+
+					<p:outputLabel value="CPF " for="cpf"></p:outputLabel>
+					<p:inputMask id="cpf" value="#{tecnicoBean.tecnico.cpf}" mask="999-999-999-99" converter="CPFConverter" required="true">
+					</p:inputMask>
+
+					<p:outputLabel value="Selecione o Time " for="time" />
+					<p:selectOneMenu value="#{tecnicoBean.timeId}" id="time">
+						<f:selectItem itemLabel="Sem time"></f:selectItem>
+						<f:selectItems value="#{tecnicoBean.times}" var="time"
+							itemLabel="#{time.nome}" itemValue="#{time.id}"/>
+					</p:selectOneMenu>
+
+					<p:commandButton action="#{tecnicoBean.gravar}" value="Enviar"
+					></p:commandButton>
+
+
+				</h:panelGrid>
+
+			</p:fieldset>
+
+		</h:form>
+
+		<h:form id="formTabelaTecnico">
+
+
+			<p:dataTable value="#{tecnicoBean.tecnicos}" var="tecnico"
+				id="tabelaTecnico" paginator="true" rows="6">
+				<f:facet name="header">Técnicos</f:facet>
+				<p:column headerText="Nome " sortBy="#{tecnico.nome}"
+					filterBy="#{tecnico.nome}" filterMatchMode="startsWith">
+					<h:outputText value="#{tecnico.nome}" />
+				</p:column>
+
+				<p:column headerText="CPF " sortBy="#{tecnico.cpf}">
+					<h:outputText value="#{tecnico.cpf}" />
+				</p:column>
+
+				<p:column rendered="#{tecnico.time != null}" headerText="Time "
+					sortBy="#{tecnico.time.nome}">
+					<h:outputText value="#{tecnico.time.nome}" />
+				</p:column>
+				<p:column rendered="#{tecnico.time == null}" headerText="Time "
+					sortBy="#{tecnico.time.nome}">
+					<h:outputText value="Atualmente sem time" />
+				</p:column>
+
+				<p:column headerText="Alterar">
+					<p:commandButton update=":tecnico" process="@this" value="alterar"
+						actionListener="#{tecnicoBean.carregar(tecnico)}"
+						icon="fa fa-fw fa-edit" />
+				</p:column>
+
+				<p:column headerText="Remover">
+					<p:commandButton update="@form" process="@this" value="remover"
+						actionListener="#{tecnicoBean.remover(tecnico)}"
+						icon="fa fa-fw fa-remove" />
+				</p:column>
+			</p:dataTable>
+
+		</h:form>
+
+	</ui:define>
+</ui:composition>
+</html>

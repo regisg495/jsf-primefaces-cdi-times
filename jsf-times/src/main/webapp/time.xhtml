@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<ui:composition template="_template.xhtml">
+
+
+	<ui:define name="titulo">
+		<p:outputPanel>Novo Time</p:outputPanel>
+	</ui:define>
+
+
+	<ui:define name="conteudo">
+		<h:form id="time">
+			<p:fieldset legend="Dados do Time">
+
+				<h:panelGrid columns="2">
+
+					<p:outputLabel value="Nome do Time " for="nome"></p:outputLabel>
+					<p:inputText id="nome" value="#{timeBean.time.nome}"
+						required="true">
+					</p:inputText>
+
+					<p:outputLabel value="Selecione o Técnico " for="tecnico" />
+					<p:selectOneMenu value="#{timeBean.tecnicoId}" id="tecnico"
+						required="true">
+						<f:selectItem itemLabel="Selecionar"></f:selectItem>
+						<f:selectItems value="#{timeBean.tecnicos}" var="tecnico"
+							itemLabel="#{tecnico.nome}" itemValue="#{tecnico.id}" />
+					</p:selectOneMenu>
+
+				</h:panelGrid>
+
+			</p:fieldset>
+
+			<p:fieldset legend="Jogadores do Time">
+
+				<p:panelGrid columns="4">
+					<p:outputLabel value="Selecione os Jogadores:" for="jogador" />
+					<p:selectOneMenu value="#{timeBean.jogadorId}" id="jogador">
+						<f:selectItem itemLabel="Escolha os Jogadores"></f:selectItem>
+						<f:selectItems value="#{timeBean.jogadores}" var="jogador"
+							itemLabel="#{jogador.nome}" itemValue="#{jogador.id}" />
+					</p:selectOneMenu>
+					<p:commandButton value="Gravar Jogador"
+						action="#{timeBean.gravarJogador}" process="@this jogador"
+						update="tabelaJogador">
+					</p:commandButton>
+
+
+					<p:commandLink value="Cadastrar novo Jogador"
+						action="#{timeBean.formJogador}" immediate="true" update="@all" />
+				</p:panelGrid>
+
+				<p:dataTable value="#{timeBean.time.jogadores}"
+					var="jogador" id="tabelaJogador" emptyMessage="Nenhum Jogador">
+					<p:column>
+						<h:outputText value="#{jogador.nome}" />
+					</p:column>
+					<p:column>
+						<p:commandButton icon="fa fa-fw fa-remove"
+							action="#{timeBean.removerJogadorDoTime(jogador)}"
+							update="tabelaJogador" process="@this" />
+					</p:column>
+				</p:dataTable>
+			</p:fieldset>
+
+			<br />
+			<p:fieldset style="text-align:center;">
+				<p:commandButton value="Gravar Time" action="#{timeBean.gravar}"
+					process="@form" update="@form :formTabelaTimes:tabelaTimes" />
+			</p:fieldset>
+			<br />
+
+
+		</h:form>
+
+		<br />
+
+		<h:form id="formTabelaTimes">
+
+			<p:dataTable value="#{timeBean.times}" var="time" id="tabelaTimes"
+				paginator="true" rows="6">
+				<f:facet name="header">Times</f:facet>
+				<p:column headerText="Nome" sortBy="#{time.nome}"
+					filterBy="#{time.nome}" filterMatchMode="startsWith">
+					<h:outputText value="#{time.nome}" />
+				</p:column>
+				<p:column headerText="Técnico" sortBy="#{time.tecnico.nome}">
+					<h:outputText value="#{time.tecnico.nome}" />
+				</p:column>
+
+				<p:column headerText="Alterar">
+					<p:commandButton update=":time" process="@this" value="alterar"
+						actionListener="#{timeBean.carregar(time)}"
+						icon="fa fa-fw fa-edit" />
+				</p:column>
+
+				<p:column headerText="Remover">
+					<p:commandButton update="@form" process="@this" value="remover"
+						actionListener="#{timeBean.remover(time)}"
+						icon="fa fa-fw fa-remove" />
+				</p:column>
+			</p:dataTable>
+
+		</h:form>
+
+
+	</ui:define>
+
+</ui:composition>
+</html>

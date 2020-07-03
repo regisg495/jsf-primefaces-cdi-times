@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<ui:composition template="_template.xhtml">
+
+	<ui:define name="titulo">
+		<p:outputPanel>Nova Posição</p:outputPanel>
+	</ui:define>
+
+	<ui:define name="conteudo">
+
+		<h:form id="posicao">
+			<p:fieldset legend="Dados da Posição">
+
+				<h:panelGrid columns="2">
+				
+
+					<p:outputLabel value="Nome da Posição " for="nome_posicao"></p:outputLabel>
+					<p:inputText id="nome_posicao"
+						value="#{posicaoBean.posicao.nome_posicao}" required="true">
+					</p:inputText>
+
+					<p:outputLabel value="Detalhes da Posição " for="detalhes_posicao"></p:outputLabel>
+					<p:inputTextarea id="detalhes_posicao"
+						value="#{posicaoBean.posicao.detalhes_posicao}">
+					</p:inputTextarea>
+
+
+					<p:commandButton action="#{posicaoBean.gravar}" value="Enviar"
+						process="@form" update="@form :formTabelaPosicao"></p:commandButton>
+
+
+				</h:panelGrid>
+			</p:fieldset>
+		</h:form>
+
+		<h:form id="formTabelaPosicao">
+
+				<p:dataTable value="#{posicaoBean.posicoes}" var="posicao"
+				id="tabelaPosicao" paginator="true" rows="6">
+				<f:facet name="header">Posições</f:facet>
+				<p:column headerText="Nome da Posição" sortBy="#{posicao.nome_posicao}"
+					filterBy="#{posicao.nome_posicao}" filterMatchMode="startsWith">
+					<h:outputText value="#{posicao.nome_posicao}" />
+				</p:column>
+				<p:column headerText="Detalhes " sortBy="#{posicao.detalhes_posicao}">
+					<h:outputText value="#{posicao.detalhes_posicao}" />
+				</p:column>
+				
+				<p:column headerText="Alterar">
+					<p:commandButton update=":posicao" process="@this"
+						value="alterar" actionListener="#{posicaoBean.carregar(posicao)}"
+						icon="fa fa-fw fa-edit" />
+				</p:column>
+
+				<p:column headerText="Remover">
+					<p:commandButton update="@form" process="@this" value="remover"
+						actionListener="#{posicaoBean.remover(posicao)}"
+						icon="fa fa-fw fa-remove" />
+				</p:column>
+			</p:dataTable>
+			
+
+		</h:form>
+
+
+	</ui:define>
+</ui:composition>
+
+</html>

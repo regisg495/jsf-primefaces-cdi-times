@@ -1,0 +1,5 @@
+<beans>
+<interceptors>
+<class>br.com.times.transaction.TransactionManager</class>
+</interceptors>
+</beans>

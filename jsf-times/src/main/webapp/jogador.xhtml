@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<ui:composition template="_template.xhtml">
+
+	<ui:define name="titulo">
+		<p:outputPanel>Novo Jogador</p:outputPanel>
+	</ui:define>
+
+	<ui:define name="conteudo">
+		<h:form id="jogador">
+			<p:fieldset legend="Dados do Jogador">
+
+				<h:panelGrid columns="2">
+
+
+					<p:outputLabel value="Nome do Jogador " for="nome"></p:outputLabel>
+					<p:inputText id="nome" value="#{jogadorBean.jogador.nome}"
+						required="true">
+					</p:inputText>
+
+					<p:outputLabel value="CPF " for="cpf"></p:outputLabel>
+					<p:inputMask id="cpf" value="#{jogadorBean.jogador.cpf}"
+						mask="999-999-999-99" converter="CPFConverter" required="true">
+					</p:inputMask>
+
+					<p:outputLabel value="Selecione o Time " for="time" />
+					<p:selectOneMenu value="#{jogadorBean.timeId}" id="time">
+						<f:selectItem itemLabel="Sem time"></f:selectItem>
+						<f:selectItems value="#{jogadorBean.times}" var="time"
+							itemLabel="#{time.nome}" itemValue="#{time.id}" />
+					</p:selectOneMenu>
+
+				</h:panelGrid>
+
+			</p:fieldset>
+
+
+			<p:fieldset legend="Posições do Jogador">
+
+				<p:panelGrid columns="4">
+					<p:outputLabel value="Selecione Posição:" for="posicao" />
+					<p:selectOneMenu value="#{jogadorBean.posicaoId}" id="posicao">
+						<f:selectItem itemLabel="Escolha uma posição"></f:selectItem>
+						<f:selectItems value="#{jogadorBean.posicoes}" var="posicao"
+							itemLabel="#{posicao.nome_posicao}" itemValue="#{posicao.id}" />
+					</p:selectOneMenu>
+					<p:commandButton value="Gravar Posição"
+						action="#{jogadorBean.gravarPosicao}" process="@this posicao"
+						update="tabelaPosicao">
+					</p:commandButton>
+
+
+					<p:commandLink value="Cadastrar nova posição"
+						action="#{posicaoBean.formPosicao}" immediate="true" update="@all" />
+				</p:panelGrid>
+
+				<p:dataTable value="#{jogadorBean.jogador.posicao}" var="posicao"
+					id="tabelaPosicao" emptyMessage="Nenhuma posição">
+					<p:column>
+						<h:outputText value="#{posicao.nome_posicao}" />
+					</p:column>
+					<p:column>
+						<p:commandButton icon="fa fa-fw fa-remove"
+							action="#{jogadorBean.removerPosicaoDoJogador(posicao)}"
+							update="tabelaPosicao" process="@this" />
+					</p:column>
+				</p:dataTable>
+
+			</p:fieldset>
+
+			<br />
+			<p:fieldset style="text-align:center;">
+				<p:commandButton value="Gravar Jogador"
+					action="#{jogadorBean.gravar}" process="@form"
+					update="@form :formTabelaJogadores:tabelaJogadores" />
+			</p:fieldset>
+			<br />
+
+
+		</h:form>
+		<br />
+
+		<h:form id="formTabelaJogadores">
+
+			<p:dataTable value="#{jogadorBean.jogadores}" var="jogador"
+				id="tabelaJogadores" paginator="true" rows="6">
+				<f:facet name="header">Jogadores</f:facet>
+				<p:column headerText="Nome" sortBy="#{jogador.nome}"
+					filterBy="#{jogador.nome}" filterMatchMode="startsWith">
+					<h:outputText value="#{jogador.nome}" />
+				</p:column>
+				<p:column headerText="CPF" sortBy="#{jogador.cpf}">
+					<h:outputText value="#{jogador.cpf}" />
+				</p:column>
+				<p:column headerText="Time" sortBy="#{jogador.time.nome}">
+					<h:outputText value="#{jogador.time.nome}" />
+				</p:column>
+
+				<p:column headerText="Posições">
+					
+					<p:dataList  value="#{jogador.posicao}" var="posicao">
+       					#{posicao.nome_posicao}
+    				</p:dataList>
+				</p:column>
+
+				<p:column headerText="Alterar">
+					<p:commandButton update=":jogador" process="@this"
+						value="alterar" actionListener="#{jogadorBean.carregar(jogador)}"
+						icon="fa fa-fw fa-edit" />
+				</p:column>
+
+
+				<p:column headerText="Remover">
+					<p:commandButton update="@form" process="@this" value="remover"
+						actionListener="#{jogadorBean.remover(jogador)}"
+						icon="fa fa-fw fa-remove" />
+				</p:column>
+			</p:dataTable>
+
+		</h:form>
+
+
+
+	</ui:define>
+</ui:composition>
+</html>
